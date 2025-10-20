@@ -32,6 +32,9 @@ dependencies:
   - requests
   - jsonlines
 
+  # Gene prediction
+  - prodigal
+
   # pip packages
   - pip:
       - esm
@@ -39,3 +42,4 @@ dependencies:
       - pyfaidx
       - biopython
       - faiss-gpu
+      - pyrodigal
