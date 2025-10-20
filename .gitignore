@@ -1,6 +1,6 @@
 # Data directories
 data
-embeddings
+/embeddings
 
 # Jupyter Notebook
 .ipynb_checkpoints
