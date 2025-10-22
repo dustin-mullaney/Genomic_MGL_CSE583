@@ -47,3 +47,13 @@ venv.bak/
 # OS
 .DS_Store
 Thumbs.db
+
+# Core dumps
+core
+core.*
+*.core
+
+# Notebook outputs
+notebooks/core
+*.csv
+*.npy

@@ -7,8 +7,8 @@ Pipeline for extracting genes from bacterial genomes and generating protein embe
 ```
 .
 ├── data/
-│   ├── refseq_genomes/          # Full bacterial genome sequences
-│   └── refseq_gene_annotations/ # Prodigal gene predictions (proteins)
+│   ├── refseq_genomes/          # Full bacterial genome sequences from refseq
+│   └── refseq_gene_annotations/ # Annotations from refseq
 ├── scripts/
 │   ├── gene_prediction/         # Tools for extracting genes from genomes
 │   └── embeddings/              # Tools for generating ESM-C embeddings
