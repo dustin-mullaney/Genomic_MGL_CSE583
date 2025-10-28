@@ -1,6 +1,17 @@
-# Organism Scale Modelling
+# Masked Graph Learning for Bacterial Genomes
 
-Pipeline for extracting genes from bacterial genomes and generating protein embeddings using ESM-C (Evolutionary Scale Modeling for proteins).
+Project: Masked graph learning for bacterial genomics
+Goals:
+1. Define gene nodes (mostly done)
+2. Represent genomes as graphs
+3. Implement [GraphMAE](https://arxiv.org/abs/2205.10803)
+ 
+The data:
+(https://www.ncbi.nlm.nih.gov/refseq/about/prokaryotes/)
+ 
+For defining gene nodes:
+[ESM Atlas](https://esmatlas.com/)
+[ESM Cambrian](https://www.evolutionaryscale.ai/blog/esm-cambrian)
 
 ## Project Structure
 
