@@ -57,3 +57,4 @@ dependencies:
   - pip:
     - sentencepiece  # For some tokenizers
     - safetensors     # For model loading
+    - einops          # Required by gLM2

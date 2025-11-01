@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=glm2_embeddings
-#SBATCH --partition=gpu
+#SBATCH --partition=chorus
 #SBATCH --gres=gpu:l40s:1
 #SBATCH --cpus-per-task=8
 #SBATCH --mem=64G
@@ -29,6 +29,9 @@ echo "Node: $SLURM_NODELIST"
 echo "Start time: $(date)"
 echo ""
 
+# Load CUDA module
+module load CUDA/11.7.0
+
 # Load conda/micromamba
 source ~/.bashrc
 micromamba activate glm2_env
@@ -36,6 +39,9 @@ micromamba activate glm2_env
 # Verify GPU
 echo "Checking GPU availability..."
 nvidia-smi
+echo ""
+echo "CUDA module loaded:"
+module list
 echo ""
 
 # Check if this is an array job
