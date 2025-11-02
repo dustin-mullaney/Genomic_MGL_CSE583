@@ -75,6 +75,10 @@ def calculate_glm2_5utr_jacobian(model, tokenizer, dna_sequence: str, device: st
     # Initialize Jacobian
     jacobian = np.zeros((L, L))
 
+    # Token offset - <|> is tokenized as 3 <unk> tokens (positions 0, 1, 2)
+    # DNA sequence starts at position 3
+    start_offset = 3
+
     nucleotides = 'ACGT'
 
     # For each position j (column - mutated position)
@@ -107,8 +111,8 @@ def calculate_glm2_5utr_jacobian(model, tokenizer, dna_sequence: str, device: st
         # Average across all mutations at position j
         avg_delta = np.mean(mutation_deltas, axis=0)
 
-        # Store in column j
-        jacobian[:, j] = avg_delta
+        # Extract sequence positions (skip first special token, same as genomic approach)
+        jacobian[:, j] = avg_delta[start_offset:start_offset+L]
 
     return jacobian
 
