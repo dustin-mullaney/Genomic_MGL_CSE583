@@ -55,11 +55,26 @@ def load_cog_annotations_for_genes(gene_ids, genome_ids):
 
     print("Loading COG annotations...")
 
-    # Load COG functional categories mapping
+    # Load COG database files
     cog_db_dir = Path('/fh/fast/srivatsan_s/grp/SrivatsanLab/Sanjay/databases/cog')
     cog_def_file = cog_db_dir / 'cog-20.def.tab'
+    cog_csv_file = cog_db_dir / 'cog-20.cog.csv'
 
-    print(f"  Loading COG categories from {cog_def_file}...")
+    # Load protein → COG mapping
+    print(f"  Loading protein→COG mapping from {cog_csv_file.name}...")
+    prot_to_cog = {}
+    with open(cog_csv_file, 'r', encoding='utf-8', errors='ignore') as f:
+        for line in f:
+            fields = line.strip().split(',')
+            if len(fields) >= 7:
+                prot_id = fields[2]  # Protein ID
+                cog_id = fields[6]   # COG ID
+                if prot_id not in prot_to_cog:
+                    prot_to_cog[prot_id] = cog_id
+    print(f"  Loaded {len(prot_to_cog):,} protein→COG mappings")
+
+    # Load COG → category mapping
+    print(f"  Loading COG→category mapping from {cog_def_file.name}...")
     cog_def = pd.read_csv(cog_def_file, sep='\t', header=None, encoding='latin-1',
                          names=['cog_id', 'category', 'description', 'gene', 'pathway', 'extra1', 'extra2'])
     cog_to_category = dict(zip(cog_def['cog_id'], cog_def['category']))
@@ -80,7 +95,7 @@ def load_cog_annotations_for_genes(gene_ids, genome_ids):
 
         try:
             hits_df = pd.read_csv(hit_file, sep='\t',
-                                 names=['gene_id', 'cog_id', 'pident', 'length', 'mismatch',
+                                 names=['gene_id', 'protein_id', 'pident', 'length', 'mismatch',
                                        'gapopen', 'qstart', 'qend', 'sstart', 'send',
                                        'evalue', 'bitscore', 'qcovhsp', 'scovhsp'])
 
@@ -88,12 +103,24 @@ def load_cog_annotations_for_genes(gene_ids, genome_ids):
 
             for gene_id, group in hits_df.groupby('gene_id'):
                 best_hit = group.iloc[0]
-                cog_id = best_hit['cog_id']
+                protein_id = best_hit['protein_id']
 
-                if pd.notna(cog_id):
-                    category = cog_to_category.get(cog_id, 'X')
-                    if len(category) > 0:
-                        cog_lookup[gene_id] = category[0]
+                if pd.notna(protein_id):
+                    # Convert underscore to dot for matching (WP_123_1 → WP_123.1)
+                    if '_' in protein_id:
+                        parts = protein_id.rsplit('_', 1)
+                        protein_id_dot = f"{parts[0]}.{parts[1]}"
+                    else:
+                        protein_id_dot = protein_id
+
+                    # Map protein → COG → category
+                    if protein_id_dot in prot_to_cog:
+                        cog_id = prot_to_cog[protein_id_dot]
+                        if cog_id in cog_to_category:
+                            categories = cog_to_category[cog_id]
+                            # Take first category (some COGs have multiple)
+                            if len(categories) > 0 and categories[0] != '-':
+                                cog_lookup[gene_id] = categories[0]
 
         except Exception as e:
             continue
