@@ -1,71 +1,20 @@
- # User Cases for the Gene Visualization Tool
+Jenny is a computational biology research scientist. She has genomes of species she studies and wants to visualize them as graphs to understand relationships between genes in the genome. She values ease of use and wants to be able to quickly generate output. Jenny has a technical background in the field but does not want to spend much time programming or editing code.
 
-This document outlines representative user cases for the gene visualization and analysis tool, highlighting different types of users, their goals, needs, and technical backgrounds.
+Kevin is a graduate student in bioinformatics conducting computational analyses on genomic data. He wants to process, visualize and interpret the  large data sets to uncover the meaningful patterns. He needs a reproducible tool to integrate data analysis, visualization and biology interpretation. He has intermediate programming skills and stats skills with strong biological knowledge but prefers a clear, well-documented workflow.
 
----
+Ken is the PI of a genomics lab. He wants to quickly visualize the genes that make up a genome and the relationship between the genes for an upcoming presentation. He does not have a background in computational biology. Ken wants something quick and easy to manipulate. Ken’s job does not require technical skill but requires a deep understanding of the underlying biology and big picture understanding of the lab’s goals and ideas. 
+Lucy is a genomics researcher. She wants to discover novel relationships between genes in genomes of various bacterial species with graph neural networks. To do this, she needs her genomic data to be formatted in graphs that can be processed by a graph neural network. She has strong programming skills but wants to avoid spending a lot of her time wrangling data.
 
-## Jenny – Computational Biology Research Scientist
-**Profile:** Jenny studies genomes of specific species and wants to visualize them as graphs to understand relationships between genes.  
-**Goals:** Quickly generate clear graph-based visualizations of genomes to explore gene relationships.  
-**Needs:** A tool that is easy to use and minimizes manual coding while producing interpretable outputs.  
-**Skill Level:** Technically trained in biology and data analysis but prefers minimal programming effort.
+Megan is an intern in a research lab assisting with data analysis projects. She wants to learn analytical workflow and contribute to data processing, visualization, and basic interpretation tasks. She needs clear instructions and accessible tools that help her understand the data pipeline. She has beginner-to-intermediate technical skills and is still gaining confidence with coding and analytical tools.
 
----
+Jeff is a science enthusiast interested in understanding how genes relate across species. He would like to explore an interactive demo that visually shows how genes from different bacteria cluster by function. He values a simple, visually engaging interface with clear explanations and interactive features to make complex data easy to grasp. He has minimal technical or biological background and relies on intuitive visuals rather than code or advanced analysis.
 
-## Kevin – Graduate Student in Bioinformatics
-**Profile:** Kevin conducts computational analyses on large genomic datasets.  
-**Goals:** Process, visualize, and interpret large-scale biological data to uncover meaningful patterns.  
-**Needs:** A reproducible and well-documented workflow that integrates data analysis, visualization, and biological interpretation.  
-**Skill Level:** Intermediate programming and statistical skills; strong biological knowledge.
+Ophelia is a scientist at a disease-control center tracking infectious-disease genomes. She needs to visualize genetic similarities and mutations across viral samples (such as COVID-19 strains) to identify emerging variants. A reliable, scalable and real-time tool is helpful for her to integrate new genomic data, highlight clusters of concern, and support outbreak response decisions. She owns moderate technical and biological expertise.
 
----
+Tony is a global health researcher at the World Health Organization monitoring pathogen evolution worldwide. He needs to compare genomic data from multiple countries to detect emerging variants, track mutation patterns, and assess potential global health risks. He would like to have a secure and globally integrated visualization tool that provides clear, real-time insights to support data-driven policy. He has strong epidemiological expertise and some data -analysis experience.
 
-## Ken – Principal Investigator (PI) of a Genomics Lab
-**Profile:** Ken leads a genomics lab and needs quick visualizations of gene relationships for presentations.  
-**Goals:** Rapidly visualize genomic structures and relationships without complex setup or code.  
-**Needs:** A simple, intuitive interface that produces publication- or presentation-ready visuals.  
-**Skill Level:** Limited computational skills but deep biological and conceptual understanding.
+Mike is a computational biology instructor and teaches graduate level courses in computational genomics. He wants to use the system to demonstrate how graph neural networks uncover biological patterns, providing students with hands-on practice on real bacterial genomes. He values clear tutorials, reproducible notebooks, and lightweight datasets that can run on classroom machines without heavy compute. He has strong domain and programming knowledge, but  prefers platforms which are easy to distribute to students.
 
----
+Alexandra is a data visualization specialist who collaborates with life-science teams to build interactive dashboards for communicating research findings. She’d love to connect the genomic graph outputs to a web-based visualization layer so that non-technical users can explore gene-gene relationships dynamically. Alexandra seeks data formats that are easy to render in visual tools. She has front-end expertise, but limited biological background.
 
-## Lucy – Genomics Researcher Using Graph Neural Networks
-**Profile:** Lucy researches bacterial genomes and aims to discover novel gene relationships using GNNs.  
-**Goals:** Convert genomic data into graph formats suitable for graph neural network models.  
-**Needs:** Reliable tools for graph construction and formatting with minimal manual preprocessing.  
-**Skill Level:** Strong programming and modeling skills; seeks efficiency and automation.
-
----
-
-## Megan – Research Intern
-**Profile:** Megan assists with bioinformatics data analysis in a research lab.  
-**Goals:** Learn and contribute to data preprocessing, visualization, and interpretation workflows.  
-**Needs:** Clear instructions, simple interfaces, and educational documentation to understand the data pipeline.  
-**Skill Level:** Beginner-to-intermediate; learning to apply coding and analytical tools confidently.
-
----
-
-## Jeff – Science Enthusiast
-**Profile:** Jeff is a curious non-specialist interested in exploring how genes relate across species.  
-**Goals:** Use an interactive demo to visualize how bacterial genes cluster by function.  
-**Needs:** A visually engaging, easy-to-navigate interface with clear explanations and interactive visuals.  
-**Skill Level:** Minimal technical or biological background; relies on intuitive and educational visuals.
-
----
-
-## Ophelia – Scientist at a Disease-Control Center
-**Profile:** Ophelia tracks infectious-disease genomes (e.g., COVID-19) to identify emerging variants.  
-**Goals:** Visualize genetic similarities and mutations across viral samples for outbreak surveillance.  
-**Needs:** A reliable, scalable, and real-time system integrating new genomic data to highlight clusters of concern.  
-**Skill Level:** Moderate technical and biological expertise; comfortable with data interpretation but not programming-heavy tasks.
-
----
-
-## Tony – WHO Global Health Researcher
-**Profile:** Tony monitors global pathogen evolution and variant emergence for the World Health Organization.  
-**Goals:** Compare genomic data across countries to detect variants, track mutations, and assess global risks.  
-**Needs:** A secure, globally integrated visualization platform providing real-time, policy-relevant insights.  
-**Skill Level:** Strong epidemiological expertise and basic analytical skills; prefers user-friendly dashboards.
-
----
-
-
+Nancy is a bioinformatics software engineer. She works at a biotech company developing computational pipelines for genomic data. She wants to integrate the bacterial graph-representation tool into existing workflows that use cloud computing. She prioritizes modular design and API access so she can automate large-scale analyses across thousands of genomes. She has strong coding skills, but she needs clear documentation and stable APIs to ensure the system is easy to maintain.
