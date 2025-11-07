@@ -28,9 +28,9 @@ Outputs: List of node embedding vectors, an adjacency matrix specifying node con
 # 2. Masked Graph Learning
 ## Subcomponents
 2.1 - Dataset Creation Module
-Purpose: Create genomic graphs using genome to graph pipeline and save a large compendium of these graphs
-Inputs: User specified list of genomes to encode as graphs in a dataset
-Outputs: A Torch Geometric Data object which specifies node features and adjacency matrices for many genomes
+- Purpose: Create genomic graphs using genome to graph pipeline and save a large compendium of these graphs
+- Inputs: User specified list of genomes to encode as graphs in a dataset
+- Outputs: A Torch Geometric Data object which specifies node features and adjacency matrices for many genomes
 
 2.2 - Data loading module
 Purpose: Manage data loading, preprocessing, and batching for training.
