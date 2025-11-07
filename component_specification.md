@@ -1,22 +1,22 @@
 # 1. Genome to Graph Pipeline
 ## Subcomponents
 1.1 - K-mer profiling
-- Purpose:
-- Inputs:
-- Outputs:
+- Purpose: In lieu of a genomic LLM that can embed *full* bacterial genomes (there isn't a model that currently exists that is good for this purpose and is easy to implement), k-mer profiles will serve as attribute vectors for genome nodes. We will use 5 or 6-mer (the counts of each 5 or 6 nucleotide sequence in each genome) profiles to create node attributes for each genome in the graph. K-mer profiles capture a lot of evolutionary information about bacterial genomes. 
+- Inputs: Raw genome sequences in fasta format
+- Outputs: a vector of frequencies for each 5 or 6 mer
 
 1.2 - Genome Parser
-- Purpose:
-- Inputs:
-- Outputs:
+- Purpose: The first step in defining gene nodes in the graph is parsing gene sequences from each genome. This component will use `prodigal` or similar software to identify protein coding regions of each genome
+- Inputs: Raw genome sequences in fasta format
+- Outputs: Fasta files with sequences and unique IDs for all protein coding gene sequences in each genome
 
 1.3 - Multiple Sequence Alignment
-- Purpose:
-- Inputs:
-- Outputs:
+- Purpose: Because there are 29M discrete protein coding genes between the ~7k genomes in refseq, it is infeasible to cluster all of them in the ESM embedding space. For this reason, we will first perform multiple sequence alignment to group genes with similar sequence, to reduce redundancy and bias in the embedding space. 
+- Inputs: Gene sequences from 1.2
+- Outputs: Groups of sequences within a certain homology threshold
 
 1.4 - ESM embedding + Clustering
-- Purpose: Provide a low-dimensional representation of genomes and genes within those genomes and cluster them into groups based on similarity
+- Purpose: Provide a low-dimensional representation of gene sequence, structure and function and cluster them into groups based on similarity. Clusters will define gene nodes in the graph, and their esm embedding vectors will be the node attributes
 - Inputs: Aligned protein sequences
 - Outputs: List of embedding vectors (one per sequence) provided by ESM model and clusters of those embeddings from a user specified clustering algorithm
 
