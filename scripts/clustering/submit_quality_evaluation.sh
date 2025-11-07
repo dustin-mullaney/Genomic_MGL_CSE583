@@ -28,7 +28,11 @@ echo "Output: ${OUTPUT_FILE}"
 echo "Start time: $(date)"
 echo ""
 
-/home/dmullane/micromamba/envs/esm3_env/bin/python "${SCRIPT}" \
+echo "Starting Python script..."
+echo "Python path: /home/dmullane/micromamba/envs/esm3_env/bin/python"
+echo "Script: ${SCRIPT}"
+
+/home/dmullane/micromamba/envs/esm3_env/bin/python -u "${SCRIPT}" \
     --pca "${PCA_FILE}" \
     --clustering results/clustering \
     --output "${OUTPUT_FILE}" \
@@ -36,6 +40,7 @@ echo ""
     --batch
 
 EXIT_CODE=$?
+echo "Python script completed with exit code: ${EXIT_CODE}"
 
 echo ""
 echo "End time: $(date)"

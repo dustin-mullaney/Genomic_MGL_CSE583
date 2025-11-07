@@ -36,56 +36,68 @@ sys.path.insert(0, str(Path(__file__).parent.parent.parent))
 
 def load_cog_annotations(gene_ids, genome_ids):
     """Load COG category annotations for genes."""
-    cog_dir = Path('data/refseq_cog_annotations')
-    cog_csv_file = Path('data/cog/cog-20.cog.csv')
-    cog_def_file = Path('data/cog/cog-20.def.tab')
+    diamond_dir = Path('results/functional_annotation')
+    cog_db_dir = Path('/fh/fast/srivatsan_s/grp/SrivatsanLab/Sanjay/databases/cog')
+    cog_csv_file = cog_db_dir / 'cog-20.cog.csv'
+    cog_def_file = cog_db_dir / 'cog-20.def.tab'
 
     # Load protein → COG mapping
     prot_to_cog = {}
-    with open(cog_csv_file, 'r') as f:
+    with open(cog_csv_file, 'r', encoding='utf-8', errors='ignore') as f:
         for line in f:
             fields = line.strip().split(',')
             if len(fields) >= 7:
                 prot_id = fields[2]
                 cog_id = fields[6]
-                prot_to_cog[prot_id] = cog_id
+                if prot_id not in prot_to_cog:
+                    prot_to_cog[prot_id] = cog_id
 
     # Load COG → category mapping
-    cog_def = pd.read_csv(cog_def_file, sep='\t', header=None,
-                          names=['cog_id', 'category', 'name', 'gene', 'pathway', 'pubmed', 'pdb'])
+    cog_def = pd.read_csv(cog_def_file, sep='\t', header=None, encoding='latin-1',
+                         names=['cog_id', 'category', 'description', 'gene', 'pathway', 'extra1', 'extra2'])
     cog_to_category = dict(zip(cog_def['cog_id'], cog_def['category']))
 
     # Process DIAMOND hits to get gene → COG category mapping
     cog_lookup = {}
     unique_genomes = set(genome_ids)
+    gene_id_set = set(gene_ids)
 
     for genome_id in unique_genomes:
-        hit_file = cog_dir / f'{genome_id}_cog_hits.tsv'
+        hit_file = diamond_dir / f'{genome_id}_cog_diamond' / f'{genome_id}_cog_hits.tsv'
         if not hit_file.exists():
             continue
 
-        hits_df = pd.read_csv(
-            hit_file, sep='\t',
-            names=['gene_id', 'protein_id', 'pident', 'length', 'mismatch',
-                   'gapopen', 'qstart', 'qend', 'sstart', 'send', 'evalue', 'bitscore']
-        )
+        try:
+            hits_df = pd.read_csv(
+                hit_file, sep='\t',
+                names=['gene_id', 'protein_id', 'pident', 'length', 'mismatch',
+                       'gapopen', 'qstart', 'qend', 'sstart', 'send',
+                       'evalue', 'bitscore', 'qcovhsp', 'scovhsp']
+            )
 
-        for gene_id, group in hits_df.groupby('gene_id'):
-            best_hit = group.loc[group['evalue'].idxmin()]
-            protein_id = best_hit['protein_id']
+            hits_df = hits_df[hits_df['gene_id'].isin(gene_id_set)]
 
-            # Convert WP_123_1 → WP_123.1
-            if '_' in protein_id:
-                parts = protein_id.rsplit('_', 1)
-                protein_id_dot = f"{parts[0]}.{parts[1]}"
-            else:
-                protein_id_dot = protein_id
+            for gene_id, group in hits_df.groupby('gene_id'):
+                best_hit = group.iloc[0]
+                protein_id = best_hit['protein_id']
 
-            if protein_id_dot in prot_to_cog:
-                cog_id = prot_to_cog[protein_id_dot]
-                if cog_id in cog_to_category:
-                    category = cog_to_category[cog_id][0]  # First letter
-                    cog_lookup[gene_id] = category
+                if pd.notna(protein_id):
+                    # Convert underscore to dot
+                    if '_' in protein_id:
+                        parts = protein_id.rsplit('_', 1)
+                        protein_id_dot = f"{parts[0]}.{parts[1]}"
+                    else:
+                        protein_id_dot = protein_id
+
+                    # Map protein → COG → category
+                    if protein_id_dot in prot_to_cog:
+                        cog_id = prot_to_cog[protein_id_dot]
+                        if cog_id in cog_to_category:
+                            categories = cog_to_category[cog_id]
+                            if len(categories) > 0 and categories[0] != '-':
+                                cog_lookup[gene_id] = categories[0]
+        except Exception as e:
+            continue
 
     return cog_lookup
 

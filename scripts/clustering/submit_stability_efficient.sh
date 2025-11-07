@@ -1,18 +1,18 @@
 #!/bin/bash
-#SBATCH --job-name=stability_eval
-#SBATCH --output=logs/stability_%A_%a.out
-#SBATCH --error=logs/stability_%A_%a.err
-#SBATCH --array=0-3
+#SBATCH --job-name=stability_eff
+#SBATCH --output=logs/stability_eff_%A_%a.out
+#SBATCH --error=logs/stability_eff_%A_%a.err
+#SBATCH --array=0-49
 #SBATCH --cpus-per-task=16
 #SBATCH --mem=128G
-#SBATCH --time=12:00:00
+#SBATCH --time=8:00:00
 #SBATCH --partition=campus-new
 
-# Stability evaluation for key clustering configurations
-# Tests if gene pairs co-cluster consistently across multiple subsamples
+# Comprehensive stability evaluation across parameter space
+# Tests: 5 resolutions × 5 n_neighbors × 2 datasets = 50 configs
 
 PROJECT_DIR="/home/dmullane/SrivatsanLab/Dustin/organism_scale_modelling"
-SCRIPT="${PROJECT_DIR}/scripts/embeddings/evaluate_clustering_stability.py"
+SCRIPT="${PROJECT_DIR}/scripts/embeddings/evaluate_clustering_stability_efficient.py"
 PCA_FILE="${PROJECT_DIR}/results/umap/pca_cache.npz"
 
 cd "${PROJECT_DIR}"
@@ -20,30 +20,38 @@ cd "${PROJECT_DIR}"
 mkdir -p logs
 mkdir -p results/clustering/stability
 
-# Define configurations to test
-# Format: resolution,n_neighbors,cog_only
-CONFIGS=(
-    "1500,15,true"    # Best performer - COG-only
-    "1500,15,false"   # Best performer - all genes
-    "1000,15,true"    # Second best - COG-only
-    "750,15,true"     # Third best - COG-only
-)
+# Define parameter grid
+RESOLUTIONS=(300 500 750 1000 1500)
+N_NEIGHBORS=(15 25 50 100 200)
+DATASETS=("true" "false")  # COG-only, all genes
 
-CONFIG="${CONFIGS[$SLURM_ARRAY_TASK_ID]}"
-IFS=',' read -r RES NN COG <<< "$CONFIG"
+# Calculate indices for this task
+TASK_ID=${SLURM_ARRAY_TASK_ID}
+
+# Total: 5 res × 5 nn × 2 datasets = 50
+# Layout: [res0_nn0_cog, res0_nn0_all, res0_nn1_cog, res0_nn1_all, ...]
+
+# Unpack task ID
+DATASET_IDX=$((TASK_ID % 2))
+NN_IDX=$(((TASK_ID / 2) % 5))
+RES_IDX=$(((TASK_ID / 10)))
+
+RES=${RESOLUTIONS[$RES_IDX]}
+NN=${N_NEIGHBORS[$NN_IDX]}
+COG=${DATASETS[$DATASET_IDX]}
 
 # Set output file
 if [ "$COG" == "true" ]; then
-    OUTPUT_FILE="${PROJECT_DIR}/results/clustering/stability/stability_res${RES}_nn${NN}_cogonly.npz"
+    OUTPUT_FILE="${PROJECT_DIR}/results/clustering/stability/stability_eff_res${RES}_nn${NN}_cogonly.npz"
     COG_FLAG="--cog-only"
 else
-    OUTPUT_FILE="${PROJECT_DIR}/results/clustering/stability/stability_res${RES}_nn${NN}_all.npz"
+    OUTPUT_FILE="${PROJECT_DIR}/results/clustering/stability/stability_eff_res${RES}_nn${NN}_all.npz"
     COG_FLAG=""
 fi
 
 echo "=========================================="
-echo "Stability Evaluation"
-echo "Task: ${SLURM_ARRAY_TASK_ID}/4"
+echo "Efficient Stability Evaluation"
+echo "Task: ${SLURM_ARRAY_TASK_ID}/50"
 echo "=========================================="
 echo "Configuration:"
 echo "  Resolution: ${RES}"
@@ -62,17 +70,19 @@ if [ -f "${OUTPUT_FILE}" ]; then
 fi
 
 # Run stability evaluation
-/home/dmullane/micromamba/envs/esm3_env/bin/python "${SCRIPT}" \
+echo "Starting Python script..."
+
+/home/dmullane/micromamba/envs/esm3_env/bin/python -u "${SCRIPT}" \
     --pca "${PCA_FILE}" \
     --n-subsamples 10 \
     --subsample-size 100000 \
     --resolution ${RES} \
     --n-neighbors ${NN} \
     ${COG_FLAG} \
-    --min-cooccur 3 \
     --output "${OUTPUT_FILE}"
 
 EXIT_CODE=$?
+echo "Python script completed with exit code: ${EXIT_CODE}"
 
 echo ""
 echo "End time: $(date)"
