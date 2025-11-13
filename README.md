@@ -19,13 +19,17 @@ For defining gene nodes:
 
 ```
 .
+├── 1_genome_to_graph/
+│   ├── 1.3_msa/                          # MMseqs2 clustering results
+│   └── 1.4_esm_embedding_clustering/     # ESM embedding generation & analysis
 ├── data/
-│   ├── refseq_genomes/          # Full bacterial genome sequences from refseq
-│   └── refseq_gene_annotations/ # Annotations from refseq
-├── scripts/
-│   ├── gene_prediction/         # Tools for extracting genes from genomes
-│   └── embeddings/              # Tools for generating ESM-C embeddings
-├── docs/                        # Documentation
-├── notebooks/                   # Jupyter notebooks
-└── environment.yml             # Conda/micromamba environment
+│   ├── all_proteins.faa                  # 30M proteins from 7,664 genomes
+│   ├── refseq_genomes/                   # Genome sequences (symlink)
+│   └── refseq_gene_annotations/          # Gene annotations (symlink)
+├── results/
+│   └── 1_genome_to_graph/
+│       ├── 1.3_msa/mmseqs_seqid_0p7/    # 70% ID clusters (30M assignments)
+│       └── 1.4_esm_embedding_clustering/ # PCA cache, UMAP, analysis
+├── docs/                                 # Documentation
+└── environment.yml                       # Conda/micromamba environment
 ```
