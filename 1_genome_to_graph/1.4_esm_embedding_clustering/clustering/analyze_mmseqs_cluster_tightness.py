@@ -60,9 +60,12 @@ def load_pca_embeddings(pca_file):
     gene_ids = data['gene_ids']
     genome_ids = data['genome_ids']
 
-    # Gene IDs in the PCA cache are already in the format we need
-    # They're stored as just the gene portion, so we use them directly
-    full_gene_ids = gene_ids
+    # Reconstruct full gene IDs by prepending the genome ID prefix
+    # The PCA cache splits "GCF_000006985.1_NC_002932.3_2" into:
+    #   genome_ids: "GCF"
+    #   gene_ids: "000006985.1_NC_002932.3_2"
+    # We need to reconstruct: "GCF_000006985.1_NC_002932.3_2"
+    full_gene_ids = np.array([f"{genome}_{gene}" for genome, gene in zip(genome_ids, gene_ids)])
 
     print(f"  Loaded {len(full_gene_ids):,} proteins")
     print(f"  Embedding dimensions: {embeddings_pca.shape[1]}")
